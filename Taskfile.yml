@@ -65,7 +65,13 @@ tasks:
   setup:
     desc: Set up the development environment
     cmds:
-      - uv run setup
+      - uv run setup --target all
+
+  teardown:
+    desc: Tear down the development environment
+    cmds:
+      - uv run teardown --target all
+
   logs:
     desc: Show logs of the running Docker container
     cmds:

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ankio Quiz"
+  short_description: "Run Ankio spaced-repetition reviews"
+  default_prompt: "Use $ankio-quiz to quiz me on my due Ankio cards."

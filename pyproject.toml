@@ -26,13 +26,18 @@ dependencies = [
 ]
 
 [project.scripts]
-install = "presentation.cli.app:main"
+setup = "presentation.cli.app:setup"
+install = "presentation.cli.app:setup"
+teardown = "presentation.cli.app:teardown"
 app = "main:main"
 mcp = "presentation.mcp.app:main"
 
 [tool.setuptools.data-files]
 "share/ankio/assistant" = ["assistant/mcp.json"]
-"share/ankio/assistant/skills/ankio" = ["assistant/skills/ankio/SKILL.md"]
+"share/ankio/assistant/skills/ankio-ingest" = ["assistant/skills/ankio-ingest/SKILL.md"]
+"share/ankio/assistant/skills/ankio-ingest/agents" = ["assistant/skills/ankio-ingest/agents/openai.yaml"]
+"share/ankio/assistant/skills/ankio-quiz" = ["assistant/skills/ankio-quiz/SKILL.md"]
+"share/ankio/assistant/skills/ankio-quiz/agents" = ["assistant/skills/ankio-quiz/agents/openai.yaml"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

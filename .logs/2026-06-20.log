@@ -126,3 +126,40 @@
 2026-06-21 00:24:30,264 INFO     application.app [MainThread] - Closing ankio...
 2026-06-21 00:24:30,412 INFO     application.app [MainThread] - Closing ankio...
 2026-06-21 00:24:30,414 INFO     application.app [MainThread] - Closing ankio...
+2026-06-21 01:24:04,824 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: b5a82b77632a459b9d17e0a56f12c6e5
+2026-06-21 01:24:59,738 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 936edaed1e6542ac929324f5cd089144
+2026-06-21 01:24:59,751 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:26:04,250 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 811521c370b84eca88c1c02c19b95048
+2026-06-21 01:26:04,456 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: cc0eba9409a84e2f9d79b8e42555cbcb
+2026-06-21 01:26:04,603 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:26:05,602 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourcesRequest
+2026-06-21 01:26:05,838 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourceTemplatesRequest
+2026-06-21 01:26:06,923 INFO     mcp.server.streamable_http [MainThread] - Terminating session: cc0eba9409a84e2f9d79b8e42555cbcb
+2026-06-21 01:29:51,461 INFO     mcp.server.streamable_http [MainThread] - Terminating session: 936edaed1e6542ac929324f5cd089144
+2026-06-21 01:32:36,930 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 64a722f5189f4bd4893f7a68045e1db6
+2026-06-21 01:32:37,210 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 4a4d9b9be40a4ff295bf8db04fa3274a
+2026-06-21 01:32:37,346 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:32:37,706 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourceTemplatesRequest
+2026-06-21 01:32:37,723 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourcesRequest
+2026-06-21 01:32:38,827 INFO     mcp.server.streamable_http [MainThread] - Terminating session: 4a4d9b9be40a4ff295bf8db04fa3274a
+2026-06-21 01:34:41,780 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 9df3cf90e2064213bac0a4ab48c67968
+2026-06-21 01:34:41,931 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: d0b79831ed514a1b940b17cdb793464f
+2026-06-21 01:34:41,947 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:35:12,405 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 11311374583847e4ba9ee5067f399b86
+2026-06-21 01:35:12,493 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: c76281a345534ab288b6b7d330f94b23
+2026-06-21 01:35:12,573 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:35:49,284 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type CallToolRequest
+2026-06-21 01:35:49,284 INFO     presentation.mcp.app [MainThread] - MCP submit_document request content_length=2433
+2026-06-21 01:35:49,284 INFO     application.app [MainThread] - Create document request received content_length=2433
+2026-06-21 01:35:49,291 INFO     infrastructure.persistence.repository.outbox [MainThread] - Appended outbox job id=58b9bd76-385a-4e5a-9c8f-e095a5889c9c topic=document kind=created version=1 idempotency_key=document:378f5071-1c3f-40a7-9143-125dc2a5ffb8:notes
+2026-06-21 01:36:42,933 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type CallToolRequest
+2026-06-21 01:36:42,934 INFO     presentation.mcp.app [MainThread] - MCP submit_document request content_length=2433
+2026-06-21 01:36:42,934 INFO     application.app [MainThread] - Create document request received content_length=2433
+2026-06-21 01:36:42,934 INFO     infrastructure.persistence.repository.outbox [MainThread] - Appended outbox job id=f502099f-16e6-4617-98a6-870af4dbbead topic=document kind=created version=1 idempotency_key=document:aeffafc5-d85b-48bd-99a3-02f9765e34ac:notes
+2026-06-21 01:37:39,068 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 0a29f8be7ae340cf8b04b2a0353b56b6
+2026-06-21 01:37:39,187 INFO     mcp.server.streamable_http_manager [MainThread] - Created new transport with session ID: 363609f2dfe34f2aa441fa712d23c67b
+2026-06-21 01:37:39,209 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListToolsRequest
+2026-06-21 01:37:40,747 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourcesRequest
+2026-06-21 01:37:40,846 INFO     mcp.server.lowlevel.server [MainThread] - Processing request of type ListResourceTemplatesRequest
+2026-06-21 01:37:41,265 INFO     mcp.server.streamable_http [MainThread] - Terminating session: 363609f2dfe34f2aa441fa712d23c67b
+2026-06-21 01:38:07,475 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager shutting down

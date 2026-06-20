@@ -67,30 +67,30 @@ The stored notes and reviews remain in the `ankio-data` Docker volume.
 
 ## Automated Local Setup
 
-Install directly from the repository with `uvx`:
+Set up directly from the repository with `uvx`:
 
 ```sh
-uvx --from git+https://github.com/username/repo-name install --target claude
+uvx --from git+https://github.com/username/repo-name setup --target claude
 ```
 
 Or, from a cloned checkout:
 
 ```sh
-uv run install --target all
+uv run setup --target all
 ```
 
 Targets:
 
 ```sh
-uv run install --target claude
-uv run install --target codex
-uv run install --target all
+uv run setup --target claude
+uv run setup --target codex
+uv run setup --target all
 ```
 
-The install command:
+The setup command:
 
 - recreates the `ankio` Docker container from `ghcr.io/shaggybommba/ankio:latest`
-- copies `assistant/skills/ankio` into `~/.claude/skills/ankio` and/or `~/.codex/skills/ankio`
+- copies bundled skills from `assistant/skills` into the selected harness skills directory
 - registers `http://localhost:8004/mcp` as an MCP server using `claude mcp` and/or `codex mcp`
 
 It assumes Docker and the selected harness CLI are installed.
@@ -98,7 +98,27 @@ It assumes Docker and the selected harness CLI are installed.
 Preview changes without writing files or running Docker:
 
 ```sh
-uv run install --target all --dry-run
+uv run setup --target all --dry-run
+```
+
+Remove the local setup:
+
+```sh
+uv run teardown --target all
+```
+
+The teardown command:
+
+- removes the `ankio` MCP server registration from Claude and/or Codex
+- removes the copied `ankio` skill directory from Claude and/or Codex
+- removes the `ankio` Docker container
+- removes the `ankio-data` Docker volume
+- removes the pulled `ghcr.io/shaggybommba/ankio:latest` image when Docker allows it
+
+Preview teardown without changing files or Docker:
+
+```sh
+uv run teardown --target all --dry-run
 ```
 
 ## Docker Compose
@@ -151,14 +171,17 @@ The assistant-facing files live in:
 assistant/
 ├── mcp.json
 └── skills/
-    └── ankio/
-        └── SKILL.md
+    ├── ankio-ingest/
+    │   ├── SKILL.md
+    │   └── agents/openai.yaml
+    └── ankio-quiz/
+        ├── SKILL.md
+        └── agents/openai.yaml
 ```
 
 Use `assistant/mcp.json` as the MCP server config when your harness accepts
-JSON MCP configuration. Use `assistant/skills/ankio/SKILL.md` as the agent
-instructions for generating notes, asking review questions, assessing answers,
-and recording review attempts.
+JSON MCP configuration. Use the skills under `assistant/skills` as the agent
+instructions for ingesting study material and running review sessions.
 
 If your harness has its own MCP config format, copy the URL from
 `assistant/mcp.json` and configure a streamable HTTP MCP server named `ankio`.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ankio Ingest"
+  short_description: "Turn content into Ankio review cards"
+  default_prompt: "Use $ankio-ingest to remember this material in Ankio."

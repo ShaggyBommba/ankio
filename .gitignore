@@ -1,0 +1,26 @@
+.env
+**/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Local environments
+.venv/
+**/.venv/
+
+# Local runtime state
+services/backend/.data/
+services/backend/.logs/
+services/backend/uploads/
+services/backend/vault/

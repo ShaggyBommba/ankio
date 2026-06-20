@@ -1,0 +1,71 @@
+version: "3"
+
+tasks:
+  sync:
+    desc: Install dependencies
+    cmds:
+      - uv sync --dev
+
+  run:
+    desc: Run backend API and worker
+    cmds:
+      - uv run app
+
+  test:
+    desc: Run backend tests
+    cmds:
+      - uv run python -m pytest
+
+  lint:
+    desc: Lint backend source
+    cmds:
+      - uv run python -m ruff check src tests
+
+  format:
+    desc: Format backend source
+    cmds:
+      - uv run python -m ruff format src tests
+
+  check:
+    desc: Run backend checks
+    cmds:
+      - task: lint
+      - task: test
+
+  clean:
+    desc: Remove backend cache files
+    cmds:
+      - find src tests -type d -name __pycache__ -prune -exec rm -rf {} +
+      - find src tests -type f -name "*.py[co]" -delete
+      - rm -rf .pytest_cache .ruff_cache src/*.egg-info
+
+  default:
+    desc: Show all tasks
+    cmds:
+      - task --list
+  
+  infra:up:
+    desc: Start infrastructure services
+    cmds:
+      - docker compose --profile infrastructure up -d
+
+  infra:down:
+    desc: Stop infrastructure services
+    cmds:
+      - docker compose --profile infrastructure down
+
+  infra:logs:
+    desc: Follow infrastructure logs
+    cmds:
+      - docker compose logs -f db
+
+  infra:reset:
+    desc: Reset infrastructure volumes and start services
+    cmds:
+      - docker compose --profile infrastructure down -v
+      - docker compose --profile infrastructure up -d
+  
+  deploy:
+    desc: Deploy application to production
+    cmds:
+      - docker compose --profile app up -d --build

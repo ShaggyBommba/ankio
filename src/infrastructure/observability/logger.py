@@ -69,6 +69,14 @@ class LoggingService:
             )
             root_logger.addHandler(stream_handler)
 
+        root_logger.info(
+            "Logging configured level=%s json_output=%s file_handler=%s stream_handler=%s",
+            settings.level.upper(),
+            settings.json_output,
+            settings.file_handler_enabled,
+            settings.stream_handler_enabled,
+        )
+
     @staticmethod
     def is_configured() -> bool:
         return LoggingService.configured

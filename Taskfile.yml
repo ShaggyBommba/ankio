@@ -1,15 +1,15 @@
 version: "3"
 
+vars:
+  IMAGE: ghcr.io/ShaggyBommba/ankio
+  REGISTRY: ankio
+  TAG: latest
+
 tasks:
   sync:
     desc: Install dependencies
     cmds:
       - uv sync --dev
-
-  run:
-    desc: Run backend API and worker
-    cmds:
-      - uv run app
 
   test:
     desc: Run backend tests
@@ -39,33 +39,41 @@ tasks:
       - find src tests -type f -name "*.py[co]" -delete
       - rm -rf .pytest_cache .ruff_cache src/*.egg-info
 
+  build:
+      desc: Build the Docker image
+      cmds:
+        - docker build -t {{.REGISTRY}}/{{.IMAGE}}:{{.TAG}} .
+
+  push:
+    desc: Push the Docker image to the registry
+    deps: [build]
+    cmds:
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.TAG}}
+
+  deploy:
+    desc: Deploy the Docker image to production
+    deps: [push]
+    cmds:
+      - echo "Deploying {{.REGISTRY}}/{{.IMAGE}}:{{.TAG}} to production..."
+      - >
+        docker run -d --name {{.IMAGE}}
+        -p ${{APP_API_PORT}}:${{APP_API_PORT}}
+        -p ${{APP_HTMX_PORT}}:${{APP_HTMX_PORT}}
+        -p ${{APP_MCP_PORT}}:${{APP_MCP_PORT}}
+        {{.REGISTRY}}/{{.IMAGE}}:{{.TAG}}
+  
+  setup:
+    desc: Set up the development environment
+    cmds:
+      - uv run setup
+  logs:
+    desc: Show logs of the running Docker container
+    cmds:
+      - docker logs -f {{.IMAGE}}
+  
   default:
     desc: Show all tasks
     cmds:
       - task --list
   
-  infra:up:
-    desc: Start infrastructure services
-    cmds:
-      - docker compose --profile infrastructure up -d
-
-  infra:down:
-    desc: Stop infrastructure services
-    cmds:
-      - docker compose --profile infrastructure down
-
-  infra:logs:
-    desc: Follow infrastructure logs
-    cmds:
-      - docker compose logs -f db
-
-  infra:reset:
-    desc: Reset infrastructure volumes and start services
-    cmds:
-      - docker compose --profile infrastructure down -v
-      - docker compose --profile infrastructure up -d
   
-  deploy:
-    desc: Deploy application to production
-    cmds:
-      - docker compose --profile app up -d --build

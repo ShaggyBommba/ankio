@@ -1,0 +1,68 @@
+<div id="overview-panel" class="p-5"{% if overview_oob | default(false) %} hx-swap-oob="true"{% endif %}>
+  <div class="grid grid-cols-2 gap-3">
+    <div class="rounded-lg border border-stone-200 bg-stone-50 p-4">
+      <p class="text-xs font-semibold uppercase tracking-normal text-stone-500">Retention</p>
+      <p class="mt-2 text-2xl font-semibold text-stone-950">{{ overview.retention_percent }}%</p>
+    </div>
+    <div class="rounded-lg border border-stone-200 bg-stone-50 p-4">
+      <p class="text-xs font-semibold uppercase tracking-normal text-stone-500">Due</p>
+      <p class="mt-2 text-2xl font-semibold text-stone-950">{{ overview.due_cards }}</p>
+    </div>
+    <div class="rounded-lg border border-stone-200 bg-stone-50 p-4">
+      <p class="text-xs font-semibold uppercase tracking-normal text-stone-500">Notes</p>
+      <p class="mt-2 text-2xl font-semibold text-stone-950">{{ overview.notes }}</p>
+    </div>
+    <div class="rounded-lg border border-stone-200 bg-stone-50 p-4">
+      <p class="text-xs font-semibold uppercase tracking-normal text-stone-500">Attempts</p>
+      <p class="mt-2 text-2xl font-semibold text-stone-950">{{ overview.attempts }}</p>
+    </div>
+  </div>
+
+  <dl class="mt-5 grid grid-cols-2 gap-x-5 gap-y-3 text-sm">
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">Documents</dt>
+      <dd class="font-medium text-stone-900">{{ overview.documents }}</dd>
+    </div>
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">Cards</dt>
+      <dd class="font-medium text-stone-900">{{ overview.review_cards }}</dd>
+    </div>
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">New cards</dt>
+      <dd class="font-medium text-stone-900">{{ overview.new_cards }}</dd>
+    </div>
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">Reviewed</dt>
+      <dd class="font-medium text-stone-900">{{ overview.reviewed_cards }}</dd>
+    </div>
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">Avg interval</dt>
+      <dd class="font-medium text-stone-900">{{ overview.average_interval_days }}d</dd>
+    </div>
+    <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-2">
+      <dt class="text-stone-500">Avg ease</dt>
+      <dd class="font-medium text-stone-900">{{ overview.average_ease_factor }}</dd>
+    </div>
+  </dl>
+
+  <div class="mt-6">
+    <h3 class="text-sm font-semibold text-stone-950">Retention over time</h3>
+    {% if overview.retention_over_time %}
+      <div class="mt-3 space-y-3">
+        {% for point in overview.retention_over_time %}
+          <div>
+            <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+              <span class="font-medium text-stone-700">{{ point.date }}</span>
+              <span class="text-stone-500">{{ point.correct }}/{{ point.attempts }} correct</span>
+            </div>
+            <div class="h-2 overflow-hidden rounded-full bg-stone-100">
+              <div class="h-full rounded-full bg-emerald-700" style="width: {{ point.retention_percent }}%"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="mt-3 text-sm text-stone-500">No review attempts yet.</p>
+    {% endif %}
+  </div>
+</div>

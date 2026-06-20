@@ -18,4 +18,4 @@ COPY . .
 
 RUN uv sync --no-cache --no-dev
 
-CMD ["app"]
+CMD ["mcp"]

@@ -1,27 +1,128 @@
-2026-06-20 13:08:45,374 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:08:45,374 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:08:45,380 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:08:45,380 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:09:42,413 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:09:42,413 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:10:36,887 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:10:36,889 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:13:03,463 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:13:03,463 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:14:23,994 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:14:23,996 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:14:25,951 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:14:25,951 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:16:26,716 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:16:26,717 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:16:28,376 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:16:28,376 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:16:58,484 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:16:58,484 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:17:00,309 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:17:00,309 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:17:14,464 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:17:14,466 INFO     application.app [MainThread] - Closing app...
-2026-06-20 13:17:16,456 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 13:17:16,456 INFO     application.app [MainThread] - Starting app v0.1.0...
-2026-06-20 17:17:01,287 INFO     application.app [MainThread] - Closing app...
+2026-06-20 22:30:17,309 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:30:17,309 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:30:17,318 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:30:17,318 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:30:17,318 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:30:17,318 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:30:17,321 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:30:17,322 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:30:17,322 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:30:17,330 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:30:17,330 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:30:17,330 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:30:17,330 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:30:17,330 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:30:17,330 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:37:46,520 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:37:46,520 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:37:46,556 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:37:46,557 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:38:27,738 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:38:27,738 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:38:27,791 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:38:27,791 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:38:27,817 INFO     presentation.mcp.app [MainThread] - MCP submit_document request content_length=36
+2026-06-20 22:38:27,818 INFO     application.app [MainThread] - Create document request received content_length=36
+2026-06-20 22:38:27,823 INFO     infrastructure.persistence.repository.outbox [MainThread] - Appended outbox job id=7f1f8a47-7716-4af2-a21b-768b13da8005 topic=document kind=created version=1 idempotency_key=document:95695a53-5170-4e60-87d1-fd7ef2e31a17:notes
+2026-06-20 22:38:27,833 INFO     application.services.notes [MainThread] - Stored document and queued note generation document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17 content_length=36
+2026-06-20 22:38:27,833 INFO     presentation.mcp.app [MainThread] - MCP submit_document stored document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17
+2026-06-20 22:38:27,838 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes request document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17 notes=1
+2026-06-20 22:38:27,838 INFO     application.app [MainThread] - Store generated notes request received document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17 notes=1
+2026-06-20 22:38:27,848 INFO     application.services.notes [MainThread] - Persisted generated notes document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17 notes=1 review_cards=1
+2026-06-20 22:38:27,849 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes stored document_id=95695a53-5170-4e60-87d1-fd7ef2e31a17 notes=1
+2026-06-20 22:38:27,849 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card request
+2026-06-20 22:38:27,849 INFO     application.app [MainThread] - Start review session request received
+2026-06-20 22:38:27,854 INFO     application.services.reviews [MainThread] - Loaded due review prompt card_id=a61b679e-f743-451d-9dea-7c4edb25123d note_id=d1c9508c-94be-4668-a854-3ff9bcbb0ef3
+2026-06-20 22:38:27,854 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card returned card_id=a61b679e-f743-451d-9dea-7c4edb25123d note_id=d1c9508c-94be-4668-a854-3ff9bcbb0ef3
+2026-06-20 22:38:27,856 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment request card_id=a61b679e-f743-451d-9dea-7c4edb25123d quality=5 correct=True
+2026-06-20 22:38:27,856 INFO     application.app [MainThread] - Record review assessment request received card_id=a61b679e-f743-451d-9dea-7c4edb25123d quality=5 correct=True
+2026-06-20 22:38:27,865 INFO     application.services.reviews [MainThread] - Recorded review assessment card_id=a61b679e-f743-451d-9dea-7c4edb25123d note_id=d1c9508c-94be-4668-a854-3ff9bcbb0ef3 quality=5 correct=True interval_days=1 due_at=2026-06-21T20:38:27.856541+00:00
+2026-06-20 22:38:27,865 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment stored card_id=a61b679e-f743-451d-9dea-7c4edb25123d interval_days=1 due_at=2026-06-21T20:38:27.856541+00:00
+2026-06-20 22:38:27,865 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview request
+2026-06-20 22:38:27,870 INFO     application.services.reviews [MainThread] - Built retention overview documents=1 notes=1 cards=1 due=0 attempts=1 retention=100.0
+2026-06-20 22:38:27,870 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview returned notes=1 cards=1 due=0 attempts=1
+2026-06-20 22:38:41,541 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:38:41,542 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:38:41,559 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:38:41,560 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:38:41,571 INFO     presentation.mcp.app [MainThread] - MCP submit_document request content_length=36
+2026-06-20 22:38:41,571 INFO     application.app [MainThread] - Create document request received content_length=36
+2026-06-20 22:38:41,574 INFO     infrastructure.persistence.repository.outbox [MainThread] - Appended outbox job id=b3756048-45f8-4f55-924e-d550b27769c6 topic=document kind=created version=1 idempotency_key=document:2180ca77-6794-49e3-a34d-38ac31dfa6cf:notes
+2026-06-20 22:38:41,577 INFO     application.services.notes [MainThread] - Stored document and queued note generation document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf content_length=36
+2026-06-20 22:38:41,577 INFO     presentation.mcp.app [MainThread] - MCP submit_document stored document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf
+2026-06-20 22:38:41,577 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes request document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf notes=1
+2026-06-20 22:38:41,577 INFO     application.app [MainThread] - Store generated notes request received document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf notes=1
+2026-06-20 22:38:41,582 INFO     application.services.notes [MainThread] - Persisted generated notes document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf notes=1 review_cards=1
+2026-06-20 22:38:41,582 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes stored document_id=2180ca77-6794-49e3-a34d-38ac31dfa6cf notes=1
+2026-06-20 22:38:41,582 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card request
+2026-06-20 22:38:41,582 INFO     application.app [MainThread] - Start review session request received
+2026-06-20 22:38:41,584 INFO     application.services.reviews [MainThread] - Loaded due review prompt card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 note_id=93e83c1c-5a1f-40f5-90c5-c0ffd8b8c49d
+2026-06-20 22:38:41,585 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card returned card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 note_id=93e83c1c-5a1f-40f5-90c5-c0ffd8b8c49d
+2026-06-20 22:38:41,585 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment request card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 quality=5 correct=True
+2026-06-20 22:38:41,585 INFO     application.app [MainThread] - Record review assessment request received card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 quality=5 correct=True
+2026-06-20 22:38:41,589 INFO     application.services.reviews [MainThread] - Recorded review assessment card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 note_id=93e83c1c-5a1f-40f5-90c5-c0ffd8b8c49d quality=5 correct=True interval_days=1 due_at=2026-06-21T20:38:41.585329+00:00
+2026-06-20 22:38:41,589 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment stored card_id=ed76f24b-85cc-4fbe-b88d-84f873439333 interval_days=1 due_at=2026-06-21T20:38:41.585329+00:00
+2026-06-20 22:38:41,590 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview request
+2026-06-20 22:38:41,592 INFO     application.services.reviews [MainThread] - Built retention overview documents=1 notes=1 cards=1 due=0 attempts=1 retention=100.0
+2026-06-20 22:38:41,592 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview returned notes=1 cards=1 due=0 attempts=1
+2026-06-20 22:39:06,809 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:39:06,810 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:39:06,822 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:39:06,822 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:39:06,822 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:39:06,850 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager started
+2026-06-20 22:40:19,725 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:40:19,725 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:40:19,737 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:40:19,737 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:40:40,564 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:40:40,564 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:40:40,579 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:40:40,579 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:40:40,591 INFO     presentation.mcp.app [MainThread] - MCP submit_document request content_length=36
+2026-06-20 22:40:40,591 INFO     application.app [MainThread] - Create document request received content_length=36
+2026-06-20 22:40:40,593 INFO     infrastructure.persistence.repository.outbox [MainThread] - Appended outbox job id=3d80c271-b6af-47b0-b6a0-35c62982fc22 topic=document kind=created version=1 idempotency_key=document:4e74ec26-75a0-4f77-a7e4-72ec7a444fed:notes
+2026-06-20 22:40:40,596 INFO     application.services.notes [MainThread] - Stored document and queued note generation document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed content_length=36
+2026-06-20 22:40:40,596 INFO     presentation.mcp.app [MainThread] - MCP submit_document stored document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed
+2026-06-20 22:40:40,596 INFO     presentation.mcp.app [MainThread] - MCP get_next_document_for_note_generation request
+2026-06-20 22:40:40,596 INFO     application.app [MainThread] - Start note generation request received
+2026-06-20 22:40:40,598 INFO     application.services.notes [MainThread] - Loaded document for note generation document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed
+2026-06-20 22:40:40,599 INFO     presentation.mcp.app [MainThread] - MCP get_next_document_for_note_generation returned document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed
+2026-06-20 22:40:40,599 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes request document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed notes=1
+2026-06-20 22:40:40,599 INFO     application.app [MainThread] - Store generated notes request received document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed notes=1
+2026-06-20 22:40:40,602 INFO     application.services.notes [MainThread] - Persisted generated notes document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed notes=1 review_cards=1
+2026-06-20 22:40:40,602 INFO     presentation.mcp.app [MainThread] - MCP store_generated_notes stored document_id=4e74ec26-75a0-4f77-a7e4-72ec7a444fed notes=1
+2026-06-20 22:40:40,602 INFO     presentation.mcp.app [MainThread] - MCP get_next_document_for_note_generation request
+2026-06-20 22:40:40,602 INFO     application.app [MainThread] - Start note generation request received
+2026-06-20 22:40:40,603 INFO     application.services.notes [MainThread] - No documents waiting for note generation
+2026-06-20 22:40:40,603 INFO     presentation.mcp.app [MainThread] - MCP get_next_document_for_note_generation returned none
+2026-06-20 22:40:40,603 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card request
+2026-06-20 22:40:40,603 INFO     application.app [MainThread] - Start review session request received
+2026-06-20 22:40:40,605 INFO     application.services.reviews [MainThread] - Loaded due review prompt card_id=726801ff-121f-451f-bdf8-60707ec71ff5 note_id=4ff3987c-000b-4b46-8f1f-3245b9f2ed0a
+2026-06-20 22:40:40,605 INFO     presentation.mcp.app [MainThread] - MCP get_next_review_card returned card_id=726801ff-121f-451f-bdf8-60707ec71ff5 note_id=4ff3987c-000b-4b46-8f1f-3245b9f2ed0a
+2026-06-20 22:40:40,605 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment request card_id=726801ff-121f-451f-bdf8-60707ec71ff5 quality=5 correct=True
+2026-06-20 22:40:40,605 INFO     application.app [MainThread] - Record review assessment request received card_id=726801ff-121f-451f-bdf8-60707ec71ff5 quality=5 correct=True
+2026-06-20 22:40:40,610 INFO     application.services.reviews [MainThread] - Recorded review assessment card_id=726801ff-121f-451f-bdf8-60707ec71ff5 note_id=4ff3987c-000b-4b46-8f1f-3245b9f2ed0a quality=5 correct=True interval_days=1 due_at=2026-06-21T20:40:40.605601+00:00
+2026-06-20 22:40:40,610 INFO     presentation.mcp.app [MainThread] - MCP record_review_assessment stored card_id=726801ff-121f-451f-bdf8-60707ec71ff5 interval_days=1 due_at=2026-06-21T20:40:40.605601+00:00
+2026-06-20 22:40:40,610 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview request
+2026-06-20 22:40:40,612 INFO     application.services.reviews [MainThread] - Built retention overview documents=1 notes=1 cards=1 due=0 attempts=1 retention=100.0
+2026-06-20 22:40:40,612 INFO     presentation.mcp.app [MainThread] - MCP get_retention_overview returned notes=1 cards=1 due=0 attempts=1
+2026-06-20 22:40:47,712 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager shutting down
+2026-06-20 22:40:47,714 INFO     application.app [MainThread] - Closing ankio...
+2026-06-20 22:40:53,181 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:40:53,181 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:40:53,192 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:40:53,192 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:40:53,192 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:40:53,221 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager started
+2026-06-20 22:56:26,108 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager shutting down
+2026-06-20 22:56:26,113 INFO     application.app [MainThread] - Closing ankio...
+2026-06-20 22:56:43,964 INFO     root [MainThread] - Logging configured level=INFO json_output=False file_handler=True stream_handler=True
+2026-06-20 22:56:43,964 INFO     application.app [MainThread] - Initializing application name=ankio version=0.1.0 env=development
+2026-06-20 22:56:43,981 INFO     application.services.outbox [MainThread] - Registered event handler topic=document kind=created version=1 handler=GenerateNotesHandler
+2026-06-20 22:56:43,981 INFO     application.app [MainThread] - Application initialized database_provider=sqlite worker_batch_limit=100
+2026-06-20 22:56:43,981 INFO     application.app [MainThread] - Starting ankio v0.1.0...
+2026-06-20 22:56:44,016 INFO     mcp.server.streamable_http_manager [MainThread] - StreamableHTTP session manager started
+2026-06-21 00:24:30,264 INFO     application.app [MainThread] - Closing ankio...
+2026-06-21 00:24:30,412 INFO     application.app [MainThread] - Closing ankio...
+2026-06-21 00:24:30,414 INFO     application.app [MainThread] - Closing ankio...

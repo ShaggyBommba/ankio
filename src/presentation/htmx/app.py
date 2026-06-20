@@ -9,7 +9,8 @@ import uvicorn
 from fastapi import FastAPI
 
 from infrastructure.config import get_settings
-from presentation.api.routes.system import routes as system_routes
+from presentation.htmx.routes.system import routes as system_routes
+from presentation.htmx.routes.reviews import routes as review_routes
 from application.app import get_app
 
 
@@ -35,6 +36,7 @@ def api() -> FastAPI:
 
     # Register API routes
     fastapi_app.include_router(system_routes)
+    fastapi_app.include_router(review_routes)
 
     return fastapi_app
 

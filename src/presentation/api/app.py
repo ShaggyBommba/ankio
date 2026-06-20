@@ -10,6 +10,8 @@ from fastapi import FastAPI
 
 from infrastructure.config import get_settings
 from presentation.api.routes.system import routes as system_routes
+from presentation.api.routes.notes import routes as notes_routes
+from presentation.api.routes.reviews import routes as reviews_routes
 from application.app import get_app
 
 
@@ -35,6 +37,8 @@ def api() -> FastAPI:
 
     # Register API routes
     fastapi_app.include_router(system_routes)
+    fastapi_app.include_router(notes_routes)
+    fastapi_app.include_router(reviews_routes)
 
     return fastapi_app
 

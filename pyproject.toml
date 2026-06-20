@@ -3,10 +3,10 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "registry"
+name = "ankio"
 version = "0.1.0"
-description = "Registry backend service."
-readme = { text = "Registry backend service.", content-type = "text/plain" }
+description = "ankio backend service."
+readme = { text = "ankio backend service.", content-type = "text/plain" }
 requires-python = ">=3.12,<3.14"
 dependencies = [
   "click>=8.4.1,<9",
@@ -26,7 +26,13 @@ dependencies = [
 ]
 
 [project.scripts]
+install = "presentation.cli.app:main"
 app = "main:main"
+mcp = "presentation.mcp.app:main"
+
+[tool.setuptools.data-files]
+"share/ankio/assistant" = ["assistant/mcp.json"]
+"share/ankio/assistant/skills/ankio" = ["assistant/skills/ankio/SKILL.md"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -1,0 +1,22 @@
+<div class="p-5">
+  {% if error %}
+    <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">{{ error }}</p>
+  {% endif %}
+
+  {% if message %}
+    <p class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{{ message }}</p>
+  {% endif %}
+
+  {% if notes %}
+    <ul class="grid gap-3">
+      {% for note in notes %}
+        <li class="rounded-lg border border-stone-200 bg-stone-50 p-4">
+          <strong class="block text-sm font-semibold leading-6 text-stone-950">{{ note.question }}</strong>
+          <p class="mt-1 text-sm leading-6 text-stone-600">{{ note.answer }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-sm text-stone-500">No notes yet.</p>
+  {% endif %}
+</div>

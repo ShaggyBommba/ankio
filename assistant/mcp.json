@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "ankio": {
+      "url": "http://localhost:8004/mcp"
+    }
+  }
+}

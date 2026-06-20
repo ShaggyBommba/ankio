@@ -28,26 +28,31 @@ Create a persistent volume for the SQLite database:
 docker volume create ankio-data
 ```
 
-Run the MCP server:
+Run the app services:
 
 ```sh
 docker run -d \
   --name ankio \
   --restart unless-stopped \
-  -p 8004:8004 \
+  -p 8034:8034 \
+  -p 8035:8035 \
   -v ankio-data:/app/data \
   -e APP_NAME=ankio \
+  -e APP_HTMX_HOST=0.0.0.0 \
+  -e APP_HTMX_PORT=8034 \
   -e APP_MCP_HOST=0.0.0.0 \
-  -e APP_MCP_PORT=8004 \
+  -e APP_MCP_PORT=8035 \
   -e APP_DATABASE__PROVIDER=sqlite \
   -e APP_DATABASE__DATABASE=data/app \
-  ghcr.io/shaggybommba/ankio:latest
+  ghcr.io/shaggybommba/ankio:latest \
+  app
 ```
 
-The MCP endpoint is then available at:
+The HTMX UI and MCP endpoint are then available at:
 
 ```text
-http://localhost:8004/mcp
+http://localhost:8034
+http://localhost:8035/mcp
 ```
 
 Check that the container is running:
@@ -90,8 +95,9 @@ uv run setup --target all
 The setup command:
 
 - recreates the `ankio` Docker container from `ghcr.io/shaggybommba/ankio:latest`
+- starts the HTMX UI at `http://localhost:8034`
 - copies bundled skills from `assistant/skills` into the selected harness skills directory
-- registers `http://localhost:8004/mcp` as an MCP server using `claude mcp` and/or `codex mcp`
+- registers `http://localhost:8035/mcp` as an MCP server using `claude mcp` and/or `codex mcp`
 
 It assumes Docker and the selected harness CLI are installed.
 
@@ -110,7 +116,7 @@ uv run teardown --target all
 The teardown command:
 
 - removes the `ankio` MCP server registration from Claude and/or Codex
-- removes the copied `ankio` skill directory from Claude and/or Codex
+- removes the copied skill directories from Claude and/or Codex
 - removes the `ankio` Docker container
 - removes the `ankio-data` Docker volume
 - removes the pulled `ghcr.io/shaggybommba/ankio:latest` image when Docker allows it
@@ -132,13 +138,17 @@ services:
     container_name: ankio
     restart: unless-stopped
     ports:
-      - "8004:8004"
+      - "8034:8034"
+      - "8035:8035"
     environment:
       APP_NAME: ankio
+      APP_HTMX_HOST: 0.0.0.0
+      APP_HTMX_PORT: 8034
       APP_MCP_HOST: 0.0.0.0
-      APP_MCP_PORT: 8004
+      APP_MCP_PORT: 8035
       APP_DATABASE__PROVIDER: sqlite
       APP_DATABASE__DATABASE: data/app
+    command: app
     volumes:
       - ankio-data:/app/data
 
@@ -162,7 +172,7 @@ Ankio has two install layers:
 The MCP URL for the local Docker setup is:
 
 ```text
-http://localhost:8004/mcp
+http://localhost:8035/mcp
 ```
 
 The assistant-facing files live in:
@@ -227,8 +237,10 @@ Common environment variables:
 
 | Variable | Default | Description |
 | --- | --- | --- |
+| `APP_HTMX_HOST` | `localhost` | HTMX bind host. Use `0.0.0.0` in Docker. |
+| `APP_HTMX_PORT` | `8034` | HTMX port. |
 | `APP_MCP_HOST` | `localhost` | MCP bind host. Use `0.0.0.0` in Docker. |
-| `APP_MCP_PORT` | `8004` | MCP port. |
+| `APP_MCP_PORT` | `8035` | MCP port. |
 | `APP_DATABASE__PROVIDER` | `sqlite` | Database provider. |
 | `APP_DATABASE__DATABASE` | `app` | SQLite database name, resolved under the app directory with `.db` appended. |
 | `APP_LOGGING__LEVEL` | `INFO` | Logging level. |

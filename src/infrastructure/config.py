@@ -60,9 +60,9 @@ class Settings(BaseSettings):
     api_host: str = "localhost"
     api_port: int = 8002
     htmx_host: str = "localhost"
-    htmx_port: int = 8003
+    htmx_port: int = 8034
     mcp_host: str = "localhost"
-    mcp_port: int = 8004
+    mcp_port: int = 8035
     worker_poll_interval: int = Field(default=3, ge=1)
     worker_batch_limit: int = Field(default=100, ge=1)
 

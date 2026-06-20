@@ -14,8 +14,10 @@ from infrastructure.observability.logger import LoggingService
 IMAGE = "ghcr.io/shaggybommba/ankio:latest"
 CONTAINER = "ankio"
 VOLUME = "ankio-data"
-PORT = 8004
-URL = f"http://localhost:{PORT}/mcp"
+MCP_PORT = 8035
+HTMX_PORT = 8034
+URL = f"http://localhost:{MCP_PORT}/mcp"
+HTMX_URL = f"http://localhost:{HTMX_PORT}"
 
 logger = logging.getLogger(__name__)
 
@@ -44,11 +46,12 @@ COMMANDS = {
 def setup_runtime(dry_run: bool) -> None:
     """Create the required volume and boot up the Ankio container."""
     logger.info(
-        "Configuring Docker runtime image=%s container=%s volume=%s port=%s dry_run=%s",
+        "Configuring Docker runtime image=%s container=%s volume=%s mcp_port=%s htmx_port=%s dry_run=%s",
         IMAGE,
         CONTAINER,
         VOLUME,
-        PORT,
+        MCP_PORT,
+        HTMX_PORT,
         dry_run,
     )
     click.echo("Configuring Docker runtime...")
@@ -66,23 +69,32 @@ def setup_runtime(dry_run: bool) -> None:
             "--restart",
             "unless-stopped",
             "-p",
-            f"{PORT}:8004",
+            f"{HTMX_PORT}:{HTMX_PORT}",
+            "-p",
+            f"{MCP_PORT}:{MCP_PORT}",
             "-v",
             f"{VOLUME}:/app/data",
             "-e",
             "APP_NAME=ankio",
             "-e",
+            "APP_HTMX_HOST=0.0.0.0",
+            "-e",
+            f"APP_HTMX_PORT={HTMX_PORT}",
+            "-e",
             "APP_MCP_HOST=0.0.0.0",
             "-e",
-            "APP_MCP_PORT=8004",
+            f"APP_MCP_PORT={MCP_PORT}",
             "-e",
             "APP_DATABASE__PROVIDER=sqlite",
             "-e",
             "APP_DATABASE__DATABASE=data/app",
             IMAGE,
+            "app",
         ],
         dry_run,
     )
+    click.echo(f"HTMX UI: {HTMX_URL}")
+    click.echo(f"MCP endpoint: {URL}")
 
 
 def bundled_skill_sources(skills_dir: Path) -> tuple[Path, ...]:

@@ -96,8 +96,9 @@ The setup command:
 
 - recreates the `ankio` Docker container from `ghcr.io/shaggybommba/ankio:latest`
 - starts the HTMX UI at `http://localhost:8034`
-- copies bundled skills from `assistant/skills` into the selected harness skills directory
-- registers `http://localhost:8035/mcp` as an MCP server using `claude mcp` and/or `codex mcp`
+- installs the local Ankio Claude Code plugin marketplace and plugin when targeting Claude
+- copies bundled skills from `assistant/skills` into Codex's skills directory when targeting Codex
+- registers `http://localhost:8035/mcp` as an MCP server using `codex mcp` when targeting Codex
 
 It assumes Docker and the selected harness CLI are installed.
 
@@ -115,8 +116,10 @@ uv run teardown --target all
 
 The teardown command:
 
-- removes the `ankio` MCP server registration from Claude and/or Codex
-- removes the copied skill directories from Claude and/or Codex
+- removes the `ankio@ankio` Claude Code plugin and local marketplace
+- removes legacy Claude MCP/skill registrations if they exist
+- removes the `ankio` MCP server registration from Codex
+- removes the copied skill directories from Codex
 - removes the `ankio` Docker container
 - removes the `ankio-data` Docker volume
 - removes the pulled `ghcr.io/shaggybommba/ankio:latest` image when Docker allows it
@@ -179,8 +182,14 @@ The assistant-facing files live in:
 
 ```text
 assistant/
+├── .claude-plugin/
+│   └── plugin.json
+├── .mcp.json
 ├── mcp.json
 └── skills/
+    ├── ankio-feedback/
+    │   ├── SKILL.md
+    │   └── agents/openai.yaml
     ├── ankio-ingest/
     │   ├── SKILL.md
     │   └── agents/openai.yaml
@@ -192,6 +201,15 @@ assistant/
 Use `assistant/mcp.json` as the MCP server config when your harness accepts
 JSON MCP configuration. Use the skills under `assistant/skills` as the agent
 instructions for ingesting study material and running review sessions.
+
+For Claude Code, this repository is also a local plugin marketplace. `task setup`
+installs the `ankio@ankio` plugin, which exposes the bundled skills and
+`assistant/.mcp.json` to Claude's plugin registry. You can verify it with:
+
+```sh
+claude plugin list
+claude mcp list
+```
 
 If your harness has its own MCP config format, copy the URL from
 `assistant/mcp.json` and configure a streamable HTTP MCP server named `ankio`.

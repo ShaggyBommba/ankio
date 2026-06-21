@@ -1,0 +1,21 @@
+{
+  "name": "ankio",
+  "metadata": {
+    "description": "Local Ankio spaced-repetition skills and MCP integration for Claude Code"
+  },
+  "owner": {
+    "name": "Ankio"
+  },
+  "plugins": [
+    {
+      "name": "ankio",
+      "description": "Store study material, generate flashcards, run reviews, and inspect retention through the local Ankio MCP server.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ankio"
+      },
+      "category": "productivity",
+      "source": "./assistant"
+    }
+  ]
+}

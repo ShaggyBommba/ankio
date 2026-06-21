@@ -33,7 +33,9 @@ app = "main:main"
 mcp = "presentation.mcp.app:main"
 
 [tool.setuptools.data-files]
-"share/ankio/assistant" = ["assistant/mcp.json"]
+"share/ankio/.claude-plugin" = [".claude-plugin/marketplace.json"]
+"share/ankio/assistant" = ["assistant/mcp.json", "assistant/.mcp.json"]
+"share/ankio/assistant/.claude-plugin" = ["assistant/.claude-plugin/plugin.json"]
 "share/ankio/assistant/skills/ankio-feedback" = ["assistant/skills/ankio-feedback/SKILL.md"]
 "share/ankio/assistant/skills/ankio-feedback/agents" = ["assistant/skills/ankio-feedback/agents/openai.yaml"]
 "share/ankio/assistant/skills/ankio-ingest" = ["assistant/skills/ankio-ingest/SKILL.md"]

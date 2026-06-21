@@ -7,14 +7,19 @@ from math import ceil
 from typing import Callable
 
 from application.adapters.core import UnitOfWork
-from application.dto import RetentionOverview, RetentionPoint, ReviewAssessmentResult, ReviewPrompt
+from application.dto import (
+    RetentionOverview,
+    RetentionPoint,
+    ReviewAssessmentResult,
+    ReviewPrompt,
+)
 from domain.entity import AnswerAssessment, ReviewAttempt, ReviewCard
 from utils.time import now, utc
 
 logger = logging.getLogger(__name__)
 
 
-class StartReviewSessionUseCase:
+class StartSessionUseCase:
     """Load the next due card prompt without exposing the answer."""
 
     def __init__(self, factory: Callable[[], UnitOfWork]) -> None:
@@ -22,7 +27,7 @@ class StartReviewSessionUseCase:
 
     def __call__(self) -> ReviewPrompt | None:
         with self.uow_factory() as uow:
-            card = uow.review_cards.next_due(now())
+            card = uow.cards.next_due(now())
             if card is None:
                 logger.info("No due review cards available")
                 return None
@@ -49,13 +54,13 @@ class StartReviewSessionUseCase:
             )
 
 
-class RecordReviewAssessmentUseCase:
+class RecordAssessmentUseCase:
     """Record an external assessment and update review scheduling."""
 
     def __init__(
         self,
         factory: Callable[[], UnitOfWork],
-        scheduler: ReviewUseCase,
+        scheduler: ScheduleCardUseCase,
     ) -> None:
         self.uow_factory = factory
         self.scheduler = scheduler
@@ -65,9 +70,9 @@ class RecordReviewAssessmentUseCase:
         card_id: str,
         assessment: AnswerAssessment,
     ) -> ReviewAssessmentResult:
-        reviewed_at = now()
+        attempted_at = now()
         with self.uow_factory() as uow:
-            card = uow.review_cards.get(card_id)
+            card = uow.cards.get(card_id)
             if card is None:
                 logger.warning(
                     "Review assessment rejected because card was not found card_id=%s",
@@ -84,46 +89,46 @@ class RecordReviewAssessmentUseCase:
                 )
                 raise ValueError(f"Note not found: {card.note_id}")
 
-            updated_card = self.scheduler(card, assessment, reviewed_at)
-            uow.review_attempts.add(
+            updated = self.scheduler(card, assessment, attempted_at)
+            uow.attempts.add(
                 ReviewAttempt(
                     card_id=card.id,
                     assessment=assessment,
-                    reviewed_at=reviewed_at,
+                    attempted_at=attempted_at,
                 )
             )
-            uow.review_cards.update(updated_card)
+            uow.cards.update(updated)
             uow.commit()
             logger.info(
                 "Recorded review assessment card_id=%s note_id=%s quality=%s correct=%s interval_days=%s due_at=%s",
-                updated_card.id,
+                updated.id,
                 note.id,
                 assessment.quality,
                 assessment.correct,
-                updated_card.interval_days,
-                updated_card.due_at.isoformat(),
+                updated.interval_days,
+                updated.due_at.isoformat(),
             )
 
             return ReviewAssessmentResult(
-                card_id=updated_card.id,
+                card_id=updated.id,
                 note_id=note.id,
                 assessment=assessment,
-                due_at=updated_card.due_at,
-                interval_days=updated_card.interval_days,
-                ease_factor=updated_card.ease_factor,
+                due_at=updated.due_at,
+                interval_days=updated.interval_days,
+                ease_factor=updated.ease_factor,
             )
 
 
-class ReviewUseCase:
+class ScheduleCardUseCase:
     """Calculate the next spaced-repetition state for a reviewed card."""
 
     def __call__(
         self,
         card: ReviewCard,
         assessment: AnswerAssessment,
-        reviewed_at: datetime | None = None,
+        attempted_at: datetime | None = None,
     ) -> ReviewCard:
-        reviewed_at = reviewed_at or now()
+        attempted_at = attempted_at or now()
         quality = assessment.quality
         if assessment.correct:
             quality = max(3, quality)
@@ -150,7 +155,7 @@ class ReviewUseCase:
             else:
                 interval_days = ceil(card.interval_days * ease_factor)
 
-        due_at = reviewed_at + timedelta(days=interval_days)
+        due_at = attempted_at + timedelta(days=interval_days)
         logger.debug(
             "Scheduled review card_id=%s quality=%s normalized_quality=%s interval_days=%s ease_factor=%s due_at=%s",
             card.id,
@@ -167,13 +172,13 @@ class ReviewUseCase:
                 "ease_factor": ease_factor,
                 "repetitions": repetitions,
                 "lapses": lapses,
-                "last_reviewed": reviewed_at,
-                "updated_at": reviewed_at,
+                "last_attempted_at": attempted_at,
+                "updated_at": attempted_at,
             }
         )
 
 
-class ReviewOverviewUseCase:
+class OverviewUseCase:
     """Summarize stored review state for dashboard display."""
 
     def __init__(self, factory: Callable[[], UnitOfWork]) -> None:
@@ -184,24 +189,24 @@ class ReviewOverviewUseCase:
         with self.uow_factory() as uow:
             documents = uow.documents.list()
             notes = uow.notes.list()
-            cards = uow.review_cards.list()
-            attempts = uow.review_attempts.list()
+            cards = uow.cards.list()
+            attempts = uow.attempts.list()
 
-        due_cards = sum(1 for card in cards if utc(card.due_at) <= current)
-        new_cards = sum(1 for card in cards if card.repetitions == 0)
-        reviewed_cards = sum(
-            1 for card in cards if card.repetitions > 0 or card.last_reviewed is not None
+        due = sum(1 for card in cards if utc(card.due_at) <= current)
+        new = sum(1 for card in cards if card.repetitions == 0)
+        reviewed = sum(
+            1
+            for card in cards
+            if card.repetitions > 0 or card.last_attempted_at is not None
         )
-        correct_attempts = sum(1 for attempt in attempts if attempt.assessment.correct)
-        retention_percent = (
-            round((correct_attempts / len(attempts)) * 100, 1) if attempts else 0.0
-        )
-        average_interval_days = (
+        correct = sum(1 for attempt in attempts if attempt.assessment.correct)
+        retention = round((correct / len(attempts)) * 100, 1) if attempts else 0.0
+        interval = (
             round(sum(card.interval_days for card in cards) / len(cards), 1)
             if cards
             else 0.0
         )
-        average_ease_factor = (
+        ease = (
             round(sum(card.ease_factor for card in cards) / len(cards), 2)
             if cards
             else 0.0
@@ -211,17 +216,17 @@ class ReviewOverviewUseCase:
             lambda: {"attempts": 0, "correct": 0}
         )
         for attempt in attempts:
-            day = utc(attempt.reviewed_at).date().isoformat()
+            day = utc(attempt.attempted_at).date().isoformat()
             by_day[day]["attempts"] += 1
             if attempt.assessment.correct:
                 by_day[day]["correct"] += 1
 
-        retention_over_time = [
+        timeline = [
             RetentionPoint(
                 date=day,
                 attempts=values["attempts"],
                 correct=values["correct"],
-                retention_percent=round(
+                percent=round(
                     (values["correct"] / values["attempts"]) * 100,
                     1,
                 ),
@@ -232,24 +237,24 @@ class ReviewOverviewUseCase:
         overview = RetentionOverview(
             documents=len(documents),
             notes=len(notes),
-            review_cards=len(cards),
-            due_cards=due_cards,
-            new_cards=new_cards,
-            reviewed_cards=reviewed_cards,
+            cards=len(cards),
+            due=due,
+            new=new,
+            reviewed=reviewed,
             attempts=len(attempts),
-            correct_attempts=correct_attempts,
-            retention_percent=retention_percent,
-            average_interval_days=average_interval_days,
-            average_ease_factor=average_ease_factor,
-            retention_over_time=retention_over_time,
+            correct=correct,
+            retention=retention,
+            interval=interval,
+            ease=ease,
+            timeline=timeline,
         )
         logger.info(
             "Built retention overview documents=%s notes=%s cards=%s due=%s attempts=%s retention=%s",
             overview.documents,
             overview.notes,
-            overview.review_cards,
-            overview.due_cards,
+            overview.cards,
+            overview.due,
             overview.attempts,
-            overview.retention_percent,
+            overview.retention,
         )
         return overview

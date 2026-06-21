@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from infrastructure.config import DatabaseSettings
@@ -16,24 +16,35 @@ class SqlDatabase:
     def __init__(self, settings: DatabaseSettings) -> None:
         """Keep database settings and lazily create SQLAlchemy objects."""
         self.settings = settings
-        self._engine: Engine | None = None
-        self._sessions: sessionmaker[Session] | None = None
+        self.engine_cache: Engine | None = None
+        self.sessions_cache: sessionmaker[Session] | None = None
 
     def engine(self) -> Engine:
         """Return the shared engine, applying driver-specific options."""
-        if self._engine is None:
-            self._engine = create_engine(self.settings.dsn)
-        return self._engine
+        if self.engine_cache is None:
+            engine = create_engine(self.settings.dsn)
+            if self.settings.provider == "sqlite":
+
+                @event.listens_for(engine, "connect")
+                def enable_sqlite_foreign_keys(dbapi_connection, connection_record):
+                    del connection_record
+                    cursor = dbapi_connection.cursor()
+                    cursor.execute("PRAGMA foreign_keys=ON")
+                    cursor.close()
+
+            self.engine_cache = engine
+        return self.engine_cache
 
     def sessions(self) -> sessionmaker[Session]:
         """Return the session factory used by repositories and units of work."""
-        if self._sessions is None:
-            self._sessions = sessionmaker(bind=self.engine())
-        return self._sessions
+        if self.sessions_cache is None:
+            self.sessions_cache = sessionmaker(bind=self.engine())
+        return self.sessions_cache
 
     def create_all(self) -> None:
         """Provision extensions and create all known database tables."""
         import infrastructure.persistence.models  # noqa: F401
+
         Base.metadata.create_all(self.engine())
 
     def drop_all(self) -> None:
@@ -44,7 +55,7 @@ class SqlDatabase:
 
     def close(self) -> None:
         """Dispose the engine and session factory."""
-        if self._engine is not None:
-            self._engine.dispose()
-            self._engine = None
-            self._sessions = None
+        if self.engine_cache is not None:
+            self.engine_cache.dispose()
+            self.engine_cache = None
+            self.sessions_cache = None

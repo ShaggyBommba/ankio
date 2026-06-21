@@ -101,7 +101,7 @@ class EventDispatcher:
     """Dispatch events to registered async handlers."""
 
     def __init__(self) -> None:
-        self._handlers: dict[EventKey, Handler[Any]] = {}
+        self.handlers: dict[EventKey, Handler[Any]] = {}
 
     def register[PayloadT](
         self,
@@ -109,9 +109,9 @@ class EventDispatcher:
         handler: Handler[PayloadT],
     ) -> None:
         key = (cls.topic, cls.kind, cls.version)
-        if key in self._handlers:
+        if key in self.handlers:
             raise ValueError(f"Handler already registered for {key}")
-        self._handlers[key] = handler
+        self.handlers[key] = handler
         logger.info(
             "Registered event handler topic=%s kind=%s version=%s handler=%s",
             cls.topic.value,
@@ -122,7 +122,7 @@ class EventDispatcher:
 
     async def dispatch(self, event: Event[Any]) -> None:
         key = (event.topic, event.kind, event.version)
-        handler = self._handlers.get(key)
+        handler = self.handlers.get(key)
         if handler is None:
             raise LookupError(f"No handler registered for {key}")
         logger.debug(

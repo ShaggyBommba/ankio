@@ -68,6 +68,7 @@ class OutboxJob(DomainModel, Generic[PayloadT]):
 
 class Document(DomainModel):
     """Represents a document in the system."""
+
     model_config = ConfigDict(extra="forbid")
 
     content: str
@@ -75,8 +76,10 @@ class Document(DomainModel):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
+
 class Note(DomainModel):
     """Represents a note of a document."""
+
     model_config = ConfigDict(extra="forbid")
 
     document_id: str = Field(..., description="ID of the linked document")
@@ -90,12 +93,21 @@ class Note(DomainModel):
 class ReviewCard(DomainModel):
     note_id: str = Field(..., description="ID of the linked note")
 
-    due_at: datetime = Field(default_factory=datetime.now, description="Timestamp when the card is due for review")
+    due_at: datetime = Field(
+        default_factory=datetime.now,
+        description="Timestamp when the card is due for review",
+    )
     interval_days: int = Field(default=0, description="Days until next review")
     ease_factor: float = Field(default=2.5, description="Ease factor for scheduling")
-    repetitions: int = Field(default=0, description="Number of times the card has been reviewed")
-    lapses: int = Field(default=0, description="Number of times the card has been marked as difficult")
-    last_reviewed: datetime | None = Field(default=None, description="Timestamp of the last review")
+    repetitions: int = Field(
+        default=0, description="Number of times the card has been reviewed"
+    )
+    lapses: int = Field(
+        default=0, description="Number of times the card has been marked as difficult"
+    )
+    last_attempted_at: datetime | None = Field(
+        default=None, description="Timestamp of the last review"
+    )
 
     id: str = Field(default_factory=lambda: str(uuid4()))
     created_at: datetime = Field(default_factory=datetime.now)
@@ -108,9 +120,12 @@ class AnswerAssessment(DomainModel):
     feedback: str = Field(..., description="Feedback provided for the answer")
     confidence: float = Field(ge=0, le=1, description="Confidence level of the answer")
 
+
 class ReviewAttempt(DomainModel):
     card_id: str = Field(..., description="ID of the reviewed card")
-    assessment: AnswerAssessment = Field(..., description="Assessment of the review attempt")
-    reviewed_at: datetime = Field(default_factory=datetime.now)
-    
+    assessment: AnswerAssessment = Field(
+        ..., description="Assessment of the review attempt"
+    )
+    attempted_at: datetime = Field(default_factory=datetime.now)
+
     id: str = Field(default_factory=lambda: str(uuid4()))

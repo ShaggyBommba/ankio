@@ -16,7 +16,9 @@ routes = APIRouter(prefix="/reviews", tags=["reviews"])
 
 
 @routes.post("/session")
-def start_review_session(app: App = Depends(get_app)) -> dict[str, dict[str, str] | None]:
+def start_review_session(
+    app: App = Depends(get_app),
+) -> dict[str, dict[str, str] | None]:
     """Start a review session with the next due card."""
     logger.info("API start review session request")
     prompt = app.start_review_session()
@@ -67,8 +69,8 @@ def review_overview(app: App = Depends(get_app)) -> dict[str, dict[str, object]]
     logger.info(
         "API review overview returned notes=%s cards=%s due=%s attempts=%s",
         overview.notes,
-        overview.review_cards,
-        overview.due_cards,
+        overview.cards,
+        overview.due,
         overview.attempts,
     )
     return {"overview": overview.model_dump(mode="json")}

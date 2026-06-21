@@ -1,0 +1,11 @@
+<div id="operation-result"{% if result_oob | default(false) %} hx-swap-oob="true"{% endif %}>
+  {% if error | default(false) %}
+    <div class="border-b border-red-100 bg-red-50 px-5 py-3 text-sm font-medium text-red-700">
+      {{ error }}
+    </div>
+  {% elif message | default(false) %}
+    <div class="border-b border-emerald-100 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-700">
+      {{ message }}
+    </div>
+  {% endif %}
+</div>

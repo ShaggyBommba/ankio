@@ -28,7 +28,7 @@
       <header class="mb-5 flex min-h-12 flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <h1 class="text-2xl font-semibold leading-tight tracking-normal text-stone-950">Ankio</h1>
-          <p class="mt-1 text-sm text-stone-600">Document storage and retention overview</p>
+          <p class="mt-1 text-sm text-stone-600">Document storage, source inspection, and retention overview</p>
         </div>
         <div class="flex items-center gap-2 text-sm text-stone-500">
           <span class="inline-flex h-2 w-2 rounded-full bg-emerald-600"></span>
@@ -48,8 +48,8 @@
           <div class="p-5">
             <form
               hx-post="/notes"
-              hx-target="#create-result"
-              hx-swap="innerHTML"
+              hx-target="#operation-result"
+              hx-swap="outerHTML"
               hx-indicator="#create-status"
               class="space-y-4"
             >
@@ -99,14 +99,41 @@
         </section>
       </div>
 
-      <section class="mt-5 overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm" aria-labelledby="notes-title">
-        <div class="flex items-center justify-between gap-3 border-b border-stone-200 px-5 py-4">
-          <h2 id="notes-title" class="text-base font-semibold leading-6 text-stone-950">Generated notes</h2>
-        </div>
-        <div id="create-result">
-          {% include "partials/notes_panel.html" %}
-        </div>
-      </section>
+      <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <section class="overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm" aria-labelledby="documents-title">
+          <div class="flex items-center justify-between gap-3 border-b border-stone-200 px-5 py-4">
+            <div>
+              <h2 id="documents-title" class="text-base font-semibold leading-6 text-stone-950">Documents</h2>
+              <p class="mt-1 text-sm text-stone-500">Stored source documents</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Refresh documents"
+              title="Refresh documents"
+              hx-get="/documents"
+              hx-target="#documents-panel"
+              hx-swap="outerHTML"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-stone-300 bg-white text-stone-700 shadow-sm transition hover:bg-stone-50 focus:outline-none focus:ring-4 focus:ring-stone-400/20"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                <path d="M3 21v-5h5"></path>
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                <path d="M16 8h5V3"></path>
+              </svg>
+            </button>
+          </div>
+          {% include "partials/operation_result.html" %}
+          {% include "partials/documents_panel.html" %}
+        </section>
+
+        <section class="overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm" aria-labelledby="document-detail-title">
+          <div class="border-b border-stone-200 px-5 py-4">
+            <h2 id="document-detail-title" class="text-base font-semibold leading-6 text-stone-950">Document detail</h2>
+          </div>
+          {% include "partials/document_detail.html" %}
+        </section>
+      </div>
     </main>
   </body>
 </html>

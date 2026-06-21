@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ankio Feedback"
+  short_description: "Coach learners after Ankio answers"
+  default_prompt: "Use $ankio-feedback to give teaching feedback after my Ankio answer."

@@ -8,23 +8,30 @@ from infrastructure.config import Settings, get_settings
 from infrastructure.observability.logger import LoggingService
 from infrastructure.persistence.database import SqlDatabase
 from application.dto import (
+    DocumentDetail,
+    DocumentSummary,
     GeneratedNote,
     RetentionOverview,
     ReviewAssessmentResult,
     ReviewPrompt,
 )
+from application.services.documents import (
+    DeleteUseCase,
+    GetDetailUseCase,
+    ListSummariesUseCase,
+)
 from application.services.outbox import EventDispatcher, OutboxRunner
 from application.services.notes import (
-    CreateNoteUseCase,
+    CreateDocumentUseCase,
     GenerateNotesHandler,
     NoteGenerator,
     StoreGeneratedNotesUseCase,
 )
 from application.services.reviews import (
-    RecordReviewAssessmentUseCase,
-    ReviewOverviewUseCase,
-    ReviewUseCase,
-    StartReviewSessionUseCase,
+    OverviewUseCase,
+    RecordAssessmentUseCase,
+    ScheduleCardUseCase,
+    StartSessionUseCase,
 )
 from domain.entity import AnswerAssessment, Document, Note
 from domain.event import DocumentCreated
@@ -50,24 +57,27 @@ class App:
             self.database.sessions(),
             self.settings.outbox,
         )
-        self.create_note_use_case = CreateNoteUseCase(
+        self.create_document_use_case = CreateDocumentUseCase(
             factory=self.uow_factory,
         )
         self.store_generated_notes_use_case = StoreGeneratedNotesUseCase(
             factory=self.uow_factory,
         )
+        self.list_documents_use_case = ListSummariesUseCase(factory=self.uow_factory)
+        self.get_document_use_case = GetDetailUseCase(factory=self.uow_factory)
+        self.delete_document_use_case = DeleteUseCase(factory=self.uow_factory)
         self.generate_notes_handler = GenerateNotesHandler(
             factory=self.uow_factory,
             generator=NoteGenerator(model="gpt-5.4-mini"),
         )
-        self.start_review_session_use_case = StartReviewSessionUseCase(
+        self.start_review_session_use_case = StartSessionUseCase(
             factory=self.uow_factory,
         )
-        self.record_review_assessment_use_case = RecordReviewAssessmentUseCase(
+        self.record_review_assessment_use_case = RecordAssessmentUseCase(
             factory=self.uow_factory,
-            scheduler=ReviewUseCase(),
+            scheduler=ScheduleCardUseCase(),
         )
-        self.review_overview_use_case = ReviewOverviewUseCase(factory=self.uow_factory)
+        self.review_overview_use_case = OverviewUseCase(factory=self.uow_factory)
 
         self.dispatcher = EventDispatcher()
         self.dispatcher.register(DocumentCreated, self.generate_notes_handler)
@@ -106,7 +116,7 @@ class App:
     def create(self, content: str) -> Document:
         """Store a document and queue note generation."""
         logger.info("Create document request received content_length=%s", len(content))
-        return self.create_note_use_case(content)
+        return self.create_document_use_case(content)
 
     def store_generated_notes(
         self,
@@ -120,6 +130,21 @@ class App:
             len(generated_notes),
         )
         return self.store_generated_notes_use_case(document_id, generated_notes)
+
+    def documents(self) -> list[DocumentSummary]:
+        """Return document-level observability summaries."""
+        logger.debug("Document list request received")
+        return self.list_documents_use_case()
+
+    def document(self, document_id: str) -> DocumentDetail | None:
+        """Return one document with generated notes and review state."""
+        logger.debug("Document detail request received document_id=%s", document_id)
+        return self.get_document_use_case(document_id)
+
+    def delete_document(self, document_id: str) -> DocumentSummary | None:
+        """Delete a document and all dependent study state."""
+        logger.info("Delete document request received document_id=%s", document_id)
+        return self.delete_document_use_case(document_id)
 
     def start_review_session(self) -> ReviewPrompt | None:
         """Start a review session with the next due card."""

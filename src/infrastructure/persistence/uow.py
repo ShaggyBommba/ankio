@@ -11,7 +11,10 @@ from infrastructure.config import OutboxSettings
 from infrastructure.persistence.repository.outbox import OutboxRepo
 from infrastructure.persistence.repository.documents import DocumentRepo
 from infrastructure.persistence.repository.notes import NoteRepo
-from infrastructure.persistence.repository.review import ReviewAttemptRepo, ReviewCardRepo
+from infrastructure.persistence.repository.review import (
+    ReviewAttemptRepo,
+    ReviewCardRepo,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +24,8 @@ class SqlUnitOfWork(UnitOfWork):
 
     documents: DocumentRepo
     notes: NoteRepo
-    review_cards: ReviewCardRepo
-    review_attempts: ReviewAttemptRepo
+    cards: ReviewCardRepo
+    attempts: ReviewAttemptRepo
     outbox: OutboxRepo
 
     def __init__(
@@ -32,25 +35,25 @@ class SqlUnitOfWork(UnitOfWork):
     ) -> None:
         self.session_factory = session_factory
         self.outbox_settings = outbox_settings
-        
-        self._session: Session | None = None
-        self._committed = False
+
+        self.active: Session | None = None
+        self.committed = False
 
     @property
     def session(self) -> Session:
-        if self._session is None:
+        if self.active is None:
             raise RuntimeError("SqlUnitOfWork must be entered before use.")
-        return self._session
+        return self.active
 
     def __enter__(self) -> Self:
-        self._session = self.session_factory()
-        self._committed = False
+        self.active = self.session_factory()
+        self.committed = False
         logger.debug("Opened SQL unit of work")
 
         self.documents = DocumentRepo(self.session)
         self.notes = NoteRepo(self.session)
-        self.review_cards = ReviewCardRepo(self.session)
-        self.review_attempts = ReviewAttemptRepo(self.session)
+        self.cards = ReviewCardRepo(self.session)
+        self.attempts = ReviewAttemptRepo(self.session)
         self.outbox = OutboxRepo(self.session, self.outbox_settings)
 
         return self
@@ -62,7 +65,7 @@ class SqlUnitOfWork(UnitOfWork):
         tb: TracebackType | None,
     ) -> None:
         try:
-            if exc_type is not None or not self._committed:
+            if exc_type is not None or not self.committed:
                 if exc_type is not None:
                     logger.debug(
                         "Rolling back SQL unit of work because exception occurred exc_type=%s",
@@ -73,12 +76,12 @@ class SqlUnitOfWork(UnitOfWork):
                 self.rollback()
         finally:
             self.session.close()
-            self._session = None
+            self.active = None
             logger.debug("Closed SQL unit of work")
 
     def commit(self) -> None:
         self.session.commit()
-        self._committed = True
+        self.committed = True
         logger.debug("Committed SQL unit of work")
 
     def rollback(self) -> None:

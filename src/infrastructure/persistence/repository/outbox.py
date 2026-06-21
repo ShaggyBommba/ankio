@@ -5,7 +5,7 @@ from datetime import timedelta
 from typing import Any
 from uuid import uuid4
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, delete, or_, select
 from sqlalchemy.orm import Session
 
 from domain.entity import OutboxJob
@@ -24,6 +24,10 @@ class OutboxRepo:
         self.session = session
         self.settings = settings
 
+    @staticmethod
+    def document_job_key(document_id: str) -> str:
+        return f"document:{document_id}:notes"
+
     def append(
         self,
         topic: EventTopic,
@@ -34,7 +38,7 @@ class OutboxRepo:
         idempotency_key: str | None = None,
     ) -> OutboxJob[dict[str, Any]]:
         max_attempts = self.settings.default_max_attempts or max_attempts
-        
+
         row = OutboxRow(
             id=str(uuid4()),
             trace_id=str(uuid4()),
@@ -58,6 +62,32 @@ class OutboxRepo:
             idempotency_key,
         )
         return row.to_domain()
+
+    def get_document_job(self, document_id: str) -> OutboxJob[dict[str, Any]] | None:
+        row = self.session.scalars(
+            select(OutboxRow)
+            .where(OutboxRow.idempotency_key == self.document_job_key(document_id))
+            .order_by(OutboxRow.created_at.desc())
+            .limit(1)
+        ).first()
+        if row is None:
+            return None
+        return row.to_domain()
+
+    def remove_document_jobs(self, document_id: str) -> int:
+        result = self.session.execute(
+            delete(OutboxRow).where(
+                OutboxRow.idempotency_key == self.document_job_key(document_id)
+            )
+        )
+        removed = result.rowcount or 0
+        if removed:
+            logger.info(
+                "Removed document outbox job(s) document_id=%s count=%s",
+                document_id,
+                removed,
+            )
+        return removed
 
     def due(
         self,
@@ -140,7 +170,9 @@ class OutboxRepo:
     ) -> None:
         row = self.session.get(OutboxRow, job_id)
         if row is None:
-            logger.warning("Cannot mark missing outbox job id=%s status=%s", job_id, status)
+            logger.warning(
+                "Cannot mark missing outbox job id=%s status=%s", job_id, status
+            )
             return
 
         status = JobStatus(status)

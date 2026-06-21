@@ -153,8 +153,8 @@ def mcp() -> FastMCP:
         logger.info(
             "MCP get_retention_overview returned notes=%s cards=%s due=%s attempts=%s",
             overview.notes,
-            overview.review_cards,
-            overview.due_cards,
+            overview.cards,
+            overview.due,
             overview.attempts,
         )
         return {"overview": overview.model_dump(mode="json")}

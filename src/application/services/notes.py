@@ -86,7 +86,7 @@ class NoteGenerator:
             return generated
 
 
-class CreateNoteUseCase:
+class CreateDocumentUseCase:
     def __init__(
         self,
         factory: Callable[[], UnitOfWork],
@@ -165,7 +165,7 @@ class StoreGeneratedNotesUseCase:
             for note in notes:
                 uow.notes.add(note)
                 created_at = now()
-                uow.review_cards.add(
+                uow.cards.add(
                     ReviewCard(
                         note_id=note.id,
                         due_at=created_at,
@@ -176,7 +176,7 @@ class StoreGeneratedNotesUseCase:
 
             uow.commit()
             logger.info(
-                "Persisted generated notes document_id=%s notes=%s review_cards=%s",
+                "Persisted generated notes document_id=%s notes=%s cards=%s",
                 document_id,
                 len(notes),
                 len(notes),

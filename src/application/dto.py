@@ -22,6 +22,36 @@ class GeneratedNotes(ApplicationDto):
     notes: list[GeneratedNote]
 
 
+class DocumentNoteView(ApplicationDto):
+    id: str
+    question: str
+    answer: str
+    card_id: str | None = None
+    due_at: datetime | None = None
+    interval_days: int | None = None
+    repetitions: int = 0
+    attempts: int = 0
+    correct: int = 0
+
+
+class DocumentSummary(ApplicationDto):
+    id: str
+    content_preview: str
+    content_length: int
+    created_at: datetime
+    updated_at: datetime
+    notes: int
+    cards: int
+    due: int
+    attempts: int
+    generation_status: str
+
+
+class DocumentDetail(DocumentSummary):
+    content: str
+    note_details: list[DocumentNoteView]
+
+
 class ReviewPrompt(ApplicationDto):
     card_id: str = Field(..., description="ID of the review card")
     note_id: str = Field(..., description="ID of the note being reviewed")
@@ -39,7 +69,9 @@ class ReviewAssessmentRequest(ApplicationDto):
 class ReviewAssessmentResult(ApplicationDto):
     card_id: str = Field(..., description="ID of the reviewed card")
     note_id: str = Field(..., description="ID of the reviewed note")
-    assessment: AnswerAssessment = Field(..., description="Assessment of the learner answer")
+    assessment: AnswerAssessment = Field(
+        ..., description="Assessment of the learner answer"
+    )
     due_at: datetime = Field(..., description="Timestamp when the card is next due")
     interval_days: int = Field(..., description="Days until the next review")
     ease_factor: float = Field(..., description="Updated ease factor")
@@ -49,19 +81,19 @@ class RetentionPoint(ApplicationDto):
     date: str
     attempts: int
     correct: int
-    retention_percent: float
+    percent: float
 
 
 class RetentionOverview(ApplicationDto):
     documents: int
     notes: int
-    review_cards: int
-    due_cards: int
-    new_cards: int
-    reviewed_cards: int
+    cards: int
+    due: int
+    new: int
+    reviewed: int
     attempts: int
-    correct_attempts: int
-    retention_percent: float
-    average_interval_days: float
-    average_ease_factor: float
-    retention_over_time: list[RetentionPoint]
+    correct: int
+    retention: float
+    interval: float
+    ease: float
+    timeline: list[RetentionPoint]

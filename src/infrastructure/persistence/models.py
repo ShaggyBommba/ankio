@@ -4,13 +4,18 @@ from utils.time import now, utc
 from datetime import datetime
 from typing import Any
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from domain.entity import AnswerAssessment, Document, Note, OutboxJob, ReviewAttempt, ReviewCard
+from domain.entity import (
+    AnswerAssessment,
+    Document,
+    Note,
+    OutboxJob,
+    ReviewAttempt,
+    ReviewCard,
+)
 from domain.value import EventKind, EventTopic, JobStatus
 from infrastructure.persistence.database import Base
-
-
 
 
 class OutboxRow(Base):
@@ -98,6 +103,13 @@ class DocumentRow(Base):
         onupdate=now,
         nullable=False,
     )
+    notes: Mapped[list[NoteRow]] = relationship(
+        "NoteRow",
+        back_populates="document",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="NoteRow.created_at",
+    )
 
     def to_domain(self) -> Document:
         """Convert this row into a document."""
@@ -119,6 +131,10 @@ class NoteRow(Base):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
     )
+    document: Mapped[DocumentRow] = relationship(
+        "DocumentRow",
+        back_populates="notes",
+    )
     question: Mapped[str] = mapped_column(Text, nullable=False)
     answer: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -131,6 +147,13 @@ class NoteRow(Base):
         default=now,
         onupdate=now,
         nullable=False,
+    )
+    cards: Mapped[list[ReviewCardRow]] = relationship(
+        "ReviewCardRow",
+        back_populates="note",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="ReviewCardRow.created_at",
     )
 
     def to_domain(self) -> Note:
@@ -155,6 +178,10 @@ class ReviewCardRow(Base):
         ForeignKey("notes.id", ondelete="CASCADE"),
         nullable=False,
     )
+    note: Mapped[NoteRow] = relationship(
+        "NoteRow",
+        back_populates="cards",
+    )
     due_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now,
@@ -164,7 +191,10 @@ class ReviewCardRow(Base):
     ease_factor: Mapped[float] = mapped_column(Float, default=2.5, nullable=False)
     repetitions: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     lapses: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    last_reviewed: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_attempted_at: Mapped[datetime | None] = mapped_column(
+        "last_reviewed",
+        DateTime(timezone=True),
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now,
@@ -175,6 +205,13 @@ class ReviewCardRow(Base):
         default=now,
         onupdate=now,
         nullable=False,
+    )
+    attempts: Mapped[list[ReviewAttemptRow]] = relationship(
+        "ReviewAttemptRow",
+        back_populates="card",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="ReviewAttemptRow.attempted_at",
     )
 
     def to_domain(self) -> ReviewCard:
@@ -187,7 +224,9 @@ class ReviewCardRow(Base):
             ease_factor=self.ease_factor,
             repetitions=self.repetitions,
             lapses=self.lapses,
-            last_reviewed=utc(self.last_reviewed) if self.last_reviewed else None,
+            last_attempted_at=utc(self.last_attempted_at)
+            if self.last_attempted_at
+            else None,
             created_at=utc(self.created_at),
             updated_at=utc(self.updated_at),
         )
@@ -203,11 +242,16 @@ class ReviewAttemptRow(Base):
         ForeignKey("review_cards.id", ondelete="CASCADE"),
         nullable=False,
     )
+    card: Mapped[ReviewCardRow] = relationship(
+        "ReviewCardRow",
+        back_populates="attempts",
+    )
     quality: Mapped[int] = mapped_column(Integer, nullable=False)
     correct: Mapped[bool] = mapped_column(Boolean, nullable=False)
     feedback: Mapped[str] = mapped_column(Text, nullable=False)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
-    reviewed_at: Mapped[datetime] = mapped_column(
+    attempted_at: Mapped[datetime] = mapped_column(
+        "reviewed_at",
         DateTime(timezone=True),
         default=now,
         nullable=False,
@@ -224,5 +268,5 @@ class ReviewAttemptRow(Base):
                 feedback=self.feedback,
                 confidence=self.confidence,
             ),
-            reviewed_at=utc(self.reviewed_at),
+            attempted_at=utc(self.attempted_at),
         )

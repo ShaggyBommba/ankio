@@ -1,6 +1,6 @@
 ---
 name: ankio-quiz
-description: Run Ankio spaced-repetition reviews. Use when the user says quiz me, review me, test me, start a review, ask me Ankio cards, continue the quiz, or when the conversation is in an active Ankio review and the user answers the current review question so the answer must be assessed and recorded.
+description: Run Ankio spaced-repetition reviews with answer assessment and teaching feedback. Use when the user says quiz me, review me, test me, start a review, ask me Ankio cards, continue the quiz, or when the conversation is in an active Ankio review and the user answers the current review question so the answer must be assessed, recorded, and corrected if wrong or incomplete.
 ---
 
 # Ankio Quiz
@@ -24,7 +24,10 @@ If the user is answering an active card:
 1. Compare the learner response to the hidden expected answer.
 2. Call the Ankio MCP `record_review_assessment` tool with `card_id`, `quality`, `correct`, `feedback`, and `confidence`.
    - In Codex, this is usually exposed as `mcp__ankio.record_review_assessment`.
-3. Briefly show whether the answer was correct, the expected answer, and specific feedback.
+3. Briefly show whether the answer was correct, the expected answer, and specific teaching feedback.
+   - Follow the `ankio-feedback` skill when available.
+   - For wrong or incomplete answers, state the expected answer, explain the mismatch, and add one short memory cue or contrast.
+   - For correct answers, confirm the key fact without adding a lecture.
 4. If the user asked for a session or continuation, immediately call the Ankio MCP `get_next_review_card` tool and ask the next question. If no cards remain, say the review is complete.
 
 If the Ankio MCP tools are not visible, use `tool_search` to search for Ankio tools before falling back. Do not write directly to SQLite or repository files.
@@ -48,7 +51,13 @@ Set `confidence` from `0.0` to `1.0` based on assessment certainty:
 - Use `0.6` to `0.8` when the response is ambiguous or partially correct.
 - Use below `0.6` only when the question or expected answer is itself unclear.
 
-Keep feedback short and actionable.
+Use the `record_review_assessment.feedback` value for a concise assessment. In the chat response, add a short teaching correction when the learner was wrong or incomplete.
+
+Feedback examples:
+
+- Wrong related answer: `Incorrect. The expected answer was the River Seine. The Thames is associated with London; connect Paris with the Seine.`
+- Partial answer: `Incomplete. Eiffel Tower is correct, but the card asked for three landmarks. Add Notre-Dame and Arc de Triomphe next time.`
+- No answer: `Missed. The expected answer was cafés. Link Saint-Germain-des-Prés with café culture.`
 
 ## Interaction Rules
 

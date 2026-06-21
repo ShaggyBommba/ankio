@@ -16,8 +16,9 @@ CONTAINER = "ankio"
 VOLUME = "ankio-data"
 MCP_PORT = 8035
 HTMX_PORT = 8034
-URL = f"http://localhost:{MCP_PORT}/mcp"
-HTMX_URL = f"http://localhost:{HTMX_PORT}"
+HOST = "127.0.0.1"
+URL = f"http://{HOST}:{MCP_PORT}/mcp"
+HTMX_URL = f"http://{HOST}:{HTMX_PORT}"
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ COMMANDS = {
 }
 
 
-def setup_runtime(dry_run: bool) -> None:
+def runtime(dry_run: bool) -> None:
     """Create the required volume and boot up the Ankio container."""
     logger.info(
         "Configuring Docker runtime image=%s container=%s volume=%s mcp_port=%s htmx_port=%s dry_run=%s",
@@ -69,9 +70,9 @@ def setup_runtime(dry_run: bool) -> None:
             "--restart",
             "unless-stopped",
             "-p",
-            f"{HTMX_PORT}:{HTMX_PORT}",
+            f"{HOST}:{HTMX_PORT}:{HTMX_PORT}",
             "-p",
-            f"{MCP_PORT}:{MCP_PORT}",
+            f"{HOST}:{MCP_PORT}:{MCP_PORT}",
             "-v",
             f"{VOLUME}:/app/data",
             "-e",
@@ -97,7 +98,7 @@ def setup_runtime(dry_run: bool) -> None:
     click.echo(f"MCP endpoint: {URL}")
 
 
-def bundled_skill_sources(skills_dir: Path) -> tuple[Path, ...]:
+def skills(skills_dir: Path) -> tuple[Path, ...]:
     """Return bundled skill directories that contain a skill manifest."""
     return tuple(
         sorted(
@@ -111,7 +112,7 @@ def bundled_skill_sources(skills_dir: Path) -> tuple[Path, ...]:
     )
 
 
-def install_skill(target: str, source: Path, dry_run: bool) -> None:
+def install(target: str, source: Path, dry_run: bool) -> None:
     """Copy skill directories to the target application's folder."""
     dest = Path.home() / f".{target}" / "skills" / source.name
     logger.info(
@@ -153,7 +154,7 @@ def unregister(target: str, dry_run: bool) -> None:
     run(COMMANDS[target]["remove"], dry_run, check=False)
 
 
-def remove_skill(target: str, skill_name: str, dry_run: bool) -> None:
+def rmskill(target: str, skill_name: str, dry_run: bool) -> None:
     """Remove the copied skill directory from the target application's folder."""
     dest = Path.home() / f".{target}" / "skills" / skill_name
     logger.info("Removing skill target=%s path=%s dry_run=%s", target, dest, dry_run)
@@ -170,7 +171,7 @@ def remove_skill(target: str, skill_name: str, dry_run: bool) -> None:
         logger.info("Skill directory already absent target=%s path=%s", target, dest)
 
 
-def teardown_runtime(dry_run: bool) -> None:
+def rmruntime(dry_run: bool) -> None:
     """Remove Docker runtime resources created by the installer."""
     logger.info(
         "Removing Docker runtime image=%s container=%s volume=%s dry_run=%s",
@@ -183,11 +184,6 @@ def teardown_runtime(dry_run: bool) -> None:
     run(["docker", "rm", "-f", CONTAINER], dry_run, check=False)
     run(["docker", "volume", "rm", VOLUME], dry_run, check=False)
     run(["docker", "image", "rm", IMAGE], dry_run, check=False)
-
-
-def target_names(target: str) -> tuple[str, ...]:
-    """Resolve the selected target option to concrete harness names."""
-    return ("claude", "codex") if target == "all" else (target,)
 
 
 def bundle() -> Path:
@@ -220,7 +216,9 @@ def run(cmd: list[str], dry_run: bool, check: bool = True) -> None:
     )
     if check and result.returncode != 0:
         logger.error("Command failed cmd=%s returncode=%s", command, result.returncode)
-        raise click.ClickException(f"Command failed: {command}")
+        raise click.ClickException(
+            f"Command failed with exit status {result.returncode}: {command}"
+        )
 
 
 @click.command()
@@ -241,8 +239,11 @@ def setup(target: str, dry_run: bool) -> None:
 
     try:
         path = bundle()
-        sources = bundled_skill_sources(path / "skills")
-        targets = target_names(target)
+        sources = skills(path / "skills")
+        if target == "all":
+            targets = ("claude", "codex")
+        else:
+            targets = (target,)
 
         logger.info(
             "Starting Ankio setup target=%s dry_run=%s bundle=%s",
@@ -252,21 +253,21 @@ def setup(target: str, dry_run: bool) -> None:
         )
         click.echo(f"Starting Ankio setup from {path}")
 
-        setup_runtime(dry_run)
+        runtime(dry_run)
 
         for name in targets:
             for source in sources:
-                install_skill(name, source, dry_run)
+                install(name, source, dry_run)
             register(name, dry_run)
 
         logger.info("Ankio setup complete target=%s dry_run=%s", target, dry_run)
         click.echo("Ankio setup complete.")
+    except click.ClickException:
+        logger.error("Ankio setup failed target=%s dry_run=%s", target, dry_run)
+        raise
     except Exception:
         logger.exception("Ankio setup failed target=%s dry_run=%s", target, dry_run)
         raise
-
-
-install = setup
 
 
 @click.command()
@@ -287,22 +288,27 @@ def teardown(target: str, dry_run: bool) -> None:
 
     try:
         path = bundle()
-        skill_names = tuple(
-            source.name for source in bundled_skill_sources(path / "skills")
-        )
-        targets = target_names(target)
+        skill_names = tuple(source.name for source in skills(path / "skills"))
+        if target == "all":
+            targets = ("claude", "codex")
+        else:
+            targets = (target,)
+
         logger.info("Starting Ankio teardown target=%s dry_run=%s", target, dry_run)
         click.echo("Starting Ankio teardown")
 
         for name in targets:
             unregister(name, dry_run)
             for skill_name in skill_names:
-                remove_skill(name, skill_name, dry_run)
+                rmskill(name, skill_name, dry_run)
 
-        teardown_runtime(dry_run)
+        rmruntime(dry_run)
 
         logger.info("Ankio teardown complete target=%s dry_run=%s", target, dry_run)
         click.echo("Ankio teardown complete.")
+    except click.ClickException:
+        logger.error("Ankio teardown failed target=%s dry_run=%s", target, dry_run)
+        raise
     except Exception:
         logger.exception("Ankio teardown failed target=%s dry_run=%s", target, dry_run)
         raise

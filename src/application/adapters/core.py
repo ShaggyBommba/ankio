@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from datetime import datetime
 from types import TracebackType
 from typing import Any, Protocol, TypeVar, runtime_checkable
@@ -30,6 +31,53 @@ class CrudRepo(Protocol[EntityT]):
 
     def remove(self, entity_id: str, /) -> EntityT | None:
         """Remove one entity by id. Return the removed entity or None if not found."""
+        ...
+
+
+@runtime_checkable
+class ReviewAttemptRecord(Protocol):
+    id: str
+    correct: bool
+    attempted_at: datetime
+
+
+@runtime_checkable
+class ReviewCardRecord(Protocol):
+    id: str
+    due_at: datetime
+    interval_days: int
+    repetitions: int
+    created_at: datetime
+    attempts: Sequence[ReviewAttemptRecord]
+
+
+@runtime_checkable
+class NoteRecord(Protocol):
+    id: str
+    question: str
+    answer: str
+    cards: Sequence[ReviewCardRecord]
+
+
+@runtime_checkable
+class DocumentRecord(Protocol):
+    id: str
+    content: str
+    created_at: datetime
+    updated_at: datetime
+    notes: Sequence[NoteRecord]
+
+
+@runtime_checkable
+class DocumentRepo(CrudRepo[Document], Protocol):
+    """Persists documents and can load their dependent review state."""
+
+    def get_with_review_state(self, entity_id: str) -> DocumentRecord | None:
+        """Read one document with notes, cards, and attempts loaded."""
+        ...
+
+    def list_with_review_state(self) -> list[DocumentRecord]:
+        """Read documents with notes, cards, and attempts loaded."""
         ...
 
 
@@ -71,6 +119,14 @@ class OutboxRepo(Protocol):
         """Move one claimed job to its next durable state."""
         ...
 
+    def get_document_job(self, document_id: str) -> OutboxJob[dict[str, Any]] | None:
+        """Read the note-generation job for one document, if present."""
+        ...
+
+    def remove_document_jobs(self, document_id: str) -> int:
+        """Remove queued or historical jobs tied to one document."""
+        ...
+
 
 @runtime_checkable
 class ReviewCardRepo(CrudRepo[ReviewCard], Protocol):
@@ -89,10 +145,10 @@ class ReviewCardRepo(CrudRepo[ReviewCard], Protocol):
 class UnitOfWork(Protocol):
     """Coordinates repositories that share one transactional session."""
 
-    documents: CrudRepo[Document]
+    documents: DocumentRepo
     notes: CrudRepo[Note]
-    review_cards: ReviewCardRepo
-    review_attempts: CrudRepo[ReviewAttempt]
+    cards: ReviewCardRepo
+    attempts: CrudRepo[ReviewAttempt]
     outbox: OutboxRepo
 
     def __enter__(self) -> UnitOfWork:

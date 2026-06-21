@@ -24,7 +24,7 @@ class ReviewCardRepo:
             ease_factor=entity.ease_factor,
             repetitions=entity.repetitions,
             lapses=entity.lapses,
-            last_reviewed=entity.last_reviewed,
+            last_attempted_at=entity.last_attempted_at,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
@@ -63,7 +63,7 @@ class ReviewCardRepo:
         row.ease_factor = entity.ease_factor
         row.repetitions = entity.repetitions
         row.lapses = entity.lapses
-        row.last_reviewed = entity.last_reviewed
+        row.last_attempted_at = entity.last_attempted_at
         row.created_at = entity.created_at
         row.updated_at = entity.updated_at
         return row.to_domain()
@@ -90,7 +90,7 @@ class ReviewAttemptRepo:
             correct=entity.assessment.correct,
             feedback=entity.assessment.feedback,
             confidence=entity.assessment.confidence,
-            reviewed_at=entity.reviewed_at,
+            attempted_at=entity.attempted_at,
         )
         self.session.add(row)
         return row.to_domain()

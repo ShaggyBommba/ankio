@@ -14,7 +14,7 @@ routes = APIRouter(tags=["notes"])
 
 
 @routes.get("/")
-def create_note(content: str, app: App = Depends(get_app)) -> dict[str, object]:
+def submit_document(content: str, app: App = Depends(get_app)) -> dict[str, object]:
     """Store a document and queue note generation."""
     logger.info("API document create request content_length=%s", len(content))
     document = app.create(content)
